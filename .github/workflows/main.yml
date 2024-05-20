@@ -1,0 +1,41 @@
+name: Payload Dumper Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      URL:
+        description: 'URL'
+        required: true
+      partitions:
+        description: 'Partitions'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@main
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5.1.0
+      with:
+        allow-prereleases: true
+        python-version: '3.13'
+
+    - name: Install Payload Dumper
+      run: pip install git+https://github.com/5ec1cff/payload-dumper
+
+    - name: Run Payload Dumper
+      run: payload_dumper --partitions ${{ github.event.inputs.partitions }} ${{ github.event.inputs.URL }}
+
+    - name: Archive output files
+      run: |
+        find output -type f -execdir zip -r {}.zip {} \;
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4.3.3
+      with:
+        name: output_files
+        path: output/*.zip
