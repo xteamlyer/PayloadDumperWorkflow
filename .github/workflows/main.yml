@@ -18,11 +18,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@main
 
-    - name: Set up Python
-      uses: actions/setup-python@v5.1.0
+    - name: Setup Python
+      uses: actions/setup-python@main
       with:
-        allow-prereleases: true
-        python-version: '3.12'
+        python-version: '3.13'
+        cache: 'pip'
 
     - name: Install Payload Dumper
       run: pip install git+https://github.com/5ec1cff/payload-dumper
